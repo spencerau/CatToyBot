@@ -1,0 +1,84 @@
+# === General ===
+.DS_Store
+Thumbs.db
+*.log
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+env/
+venv/
+ENV/
+.venv/
+.ipynb_checkpoints/
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# === PlatformIO (ESP32 firmware) ===
+.pio/
+.build/
+platformio.ini.bkp
+libdeps/
+.vscode/.browse.c_cpp.db*
+
+# Arduino
+*.elf
+*.hex
+*.bin
+*.eep
+*.map
+*.dmp
+*.lst
+*.o
+*.a
+
+# === C/C++ ===
+*.out
+*.obj
+*.exe
+
+# === JavaScript/Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.next/
+out/
+dist/
+.cache/
+.vercel/
+.vite/
+
+# === VSCode ===
+.vscode/
+
+# === Environment / Secrets ===
+.env
+#.env.*
+*.secret
+credentials.json
+secrets.json
+
+# === OS Specific ===
+.DS_Store
+ehthumbs.db
+Icon?
+.Spotlight-V100
+.Trashes
+
+# === Coverage / Test Reports ===
+coverage/
+htmlcov/
+*.cover
+*.lcov
+.nyc_output/
