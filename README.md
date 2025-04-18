@@ -13,6 +13,7 @@ CatToyBot/
 
 ├── rasp-pi/                 # Code running on Raspberry Pi
 │   ├── camera/               # PiCam3 video capture and CV logic
+
 │   │   ├── video.py
 │   │   └── file_2.py
 │   ├── control/              # MQTT publisher to send commands to ESP32
