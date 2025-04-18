@@ -16,80 +16,97 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="bg-[#1A1A2E] border-[#2A2A3F] hover:border-[#00F5FF]/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.1)] group">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white group-hover:text-[#00F5FF] transition-colors">
-                <span>📹</span> Video Feed
-              </CardTitle>
-              <CardDescription className="text-gray-400">Live camera stream from your rover</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-video bg-[#0A0A0F] rounded-lg flex items-center justify-center overflow-hidden border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                <p className="text-gray-500 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                  Camera feed not connected
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-[#1A1A2E] border-[#2A2A3F] hover:border-[#00F5FF]/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.1)] group">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white group-hover:text-[#00F5FF] transition-colors">
-                <span>🎮</span> Controller Status
-              </CardTitle>
-              <CardDescription className="text-gray-400">PS5 controller connection status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                  <span className="text-gray-300">Status</span>
-                  <span className="text-red-400 flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-                    Disconnected
-                  </span>
+        {/* Main content area with video feed and status cards */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Video feed section - larger and more prominent */}
+          <div className="lg:w-2/3">
+            <Card className="bg-[#1A1A2E] border-[#2A2A3F] hover:border-[#00F5FF]/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.1)] group h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-[#00F5FF] transition-colors">
+                  <span>📹</span> Live Feed
+                </CardTitle>
+                <CardDescription className="text-gray-400">Real-time camera stream from your rover</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="aspect-video bg-[#0A0A0F] rounded-lg flex items-center justify-center overflow-hidden border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                  <p className="text-gray-500 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    Camera feed not connected
+                  </p>
                 </div>
-                <div className="flex justify-between items-center p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                  <span className="text-gray-300">Last Input</span>
-                  <span className="text-gray-400">Never</span>
+                {/* Video controls */}
+                <div className="mt-4 flex items-center justify-between p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                  <div className="flex items-center gap-4">
+                    <button className="text-gray-400 hover:text-[#00F5FF] transition-colors">
+                      <span className="text-xl">⚡</span>
+                    </button>
+                    <button className="text-gray-400 hover:text-[#00F5FF] transition-colors">
+                      <span className="text-xl">🔄</span>
+                    </button>
+                  </div>
+                  <span className="text-gray-400">720p</span>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
-          <Card className="bg-[#1A1A2E] border-[#2A2A3F] hover:border-[#00F5FF]/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.1)] group">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white group-hover:text-[#00F5FF] transition-colors">
-                <span>⚡</span> System Status
-              </CardTitle>
-              <CardDescription className="text-gray-400">Rover telemetry data</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                  <span className="text-gray-300">Battery</span>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-16 bg-[#2A2A3F] rounded-full overflow-hidden">
-                      <div className="h-full w-full bg-[#00F5FF] rounded-full"></div>
-                    </div>
-                    <span className="text-[#00F5FF]">100%</span>
+          {/* Status cards - moved to the side */}
+          <div className="lg:w-1/3 flex flex-col gap-6">
+            <Card className="bg-[#1A1A2E] border-[#2A2A3F] hover:border-[#00F5FF]/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.1)] group">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-[#00F5FF] transition-colors text-lg">
+                  <span>🎮</span> Controller Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                    <span className="text-gray-300 text-sm">Status</span>
+                    <span className="text-red-400 flex items-center gap-2 text-sm">
+                      <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                      Disconnected
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                    <span className="text-gray-300 text-sm">Last Input</span>
+                    <span className="text-gray-400 text-sm">Never</span>
                   </div>
                 </div>
-                <div className="flex justify-between items-center p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                  <span className="text-gray-300">Connection</span>
-                  <span className="text-red-400 flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-                    Offline
-                  </span>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#1A1A2E] border-[#2A2A3F] hover:border-[#00F5FF]/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.1)] group">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-white group-hover:text-[#00F5FF] transition-colors text-lg">
+                  <span>⚡</span> System Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                    <span className="text-gray-300 text-sm">Battery</span>
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 w-12 bg-[#2A2A3F] rounded-full overflow-hidden">
+                        <div className="h-full w-full bg-[#00F5FF] rounded-full"></div>
+                      </div>
+                      <span className="text-[#00F5FF] text-sm">100%</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                    <span className="text-gray-300 text-sm">Connection</span>
+                    <span className="text-red-400 flex items-center gap-2 text-sm">
+                      <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+                      Offline
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                    <span className="text-gray-300 text-sm">Motors</span>
+                    <span className="text-gray-400 text-sm">Inactive</span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                  <span className="text-gray-300">Motors</span>
-                  <span className="text-gray-400">Inactive</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <div className="fixed bottom-6 right-6">
