@@ -1,5 +1,6 @@
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { VideoStream } from '@/components/ui/video-stream'; // Import the new component
 
 export default function Home() {
   return (
@@ -28,11 +29,9 @@ export default function Home() {
                 <CardDescription className="text-gray-400">Real-time camera stream from your rover</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="aspect-video bg-[#0A0A0F] rounded-lg flex items-center justify-center overflow-hidden border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
-                  <p className="text-gray-500 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                    Camera feed not connected
-                  </p>
+                {/* Replace placeholder with the VideoStream component */}
+                <div className="aspect-video bg-[#0A0A0F] rounded-lg overflow-hidden border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
+                  <VideoStream />
                 </div>
                 {/* Video controls */}
                 <div className="mt-4 flex items-center justify-between p-3 rounded-lg bg-[#0A0A0F] border border-[#2A2A3F] group-hover:border-[#00F5FF]/20">
