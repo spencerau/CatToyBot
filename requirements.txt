@@ -1,3 +1,8 @@
-flask
-flask-cors
-opencv-python
+# flask
+# flask-cors
+# opencv-python
+
+pyserial
+dualsense-controller
+pyyaml
+hidapi

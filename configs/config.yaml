@@ -1,0 +1,25 @@
+# config.yaml
+
+# Serial settings
+serial:
+  # for MacOS testing
+  port: "/dev/cu.usbmodem101" 
+  # for Pi 5
+  #port: "/dev/ttyACM0"
+  baudrate: 115200
+  timeout: 1
+  write_timeout: 2.5
+  dsrdtr: false
+  rtscts: false
+  trigger_timeout: 5.0
+
+# deadzone, sensitivity, etc for DS5
+dualsense:
+  pass
+
+turn:
+  # PWM speed 0–255 
+  speed: 200
+  # ms (0 = continuous until stop)
+  duration: 0
+  turn_coef: 150
