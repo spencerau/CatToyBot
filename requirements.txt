@@ -1,8 +1,7 @@
-# flask
-# flask-cors
-# opencv-python
-
 pyserial
 dualsense-controller
 pyyaml
 hidapi
+
+flask 
+opencv-python

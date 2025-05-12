@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CatBot Control</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 20px; }
+        img { border: 1px solid #ccc; }
+        button {
+            width: 80px; height: 50px;
+            margin: 5px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        function sendCommand(dir) {
+            fetch("/drive", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "dir=" + dir
+            });
+        }
+
+        // Optional: WASD key handling
+        document.addEventListener('keydown', function(event) {
+            const keyMap = {
+                'w': 'forward',
+                's': 'backward',
+                'a': 'left',
+                'd': 'right',
+                ' ': 'stop'
+            };
+            let cmd = keyMap[event.key.toLowerCase()];
+            if (cmd) sendCommand(cmd);
+        });
+    </script>
+</head>
+<body>
+    <h2>Live Camera Feed + Robot Controls</h2>
+    <img src="{{ url_for('video') }}" width="640" height="360"><br><br>
+
+    <div>
+        <button onclick="sendCommand('forward')">?</button><br>
+        <button onclick="sendCommand('left')">?</button>
+        <button onclick="sendCommand('stop')">?</button>
+        <button onclick="sendCommand('right')">?</button><br>
+        <button onclick="sendCommand('backward')">?</button>
+    </div>
+
+    <p>Use W A S D keys or spacebar to control the robot</p>
+</body>
+</html>

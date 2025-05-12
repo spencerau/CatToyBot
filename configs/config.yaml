@@ -3,9 +3,9 @@
 # Serial settings
 serial:
   # for MacOS testing
-  port: "/dev/cu.usbmodem2101" 
+  #port: "/dev/cu.usbmodem2101" 
   # for Pi 5
-  #port: "/dev/ttyACM0"
+  port: "/dev/ttyACM0"
   baudrate: 115200
   timeout: 1
   write_timeout: 2.5
