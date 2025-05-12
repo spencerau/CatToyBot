@@ -186,7 +186,7 @@ void handlePacket(const DataPacket &pkt) {
       break;
     // turn left
     case 'L':
-      turn('l', pkt.speed*2, pkt.turn*2);
+      turn('l', pkt.speed*2, pkt.turn*-2);
       Serial.println("ACK");
       break;
     // turn right

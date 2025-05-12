@@ -3,7 +3,7 @@
 # Serial settings
 serial:
   # for MacOS testing
-  port: "/dev/cu.usbmodem101" 
+  port: "/dev/cu.usbmodem2101" 
   # for Pi 5
   #port: "/dev/ttyACM0"
   baudrate: 115200
@@ -19,7 +19,7 @@ dualsense:
 
 turn:
   # PWM speed 0–255 
-  speed: 200
+  speed: 250
   # ms (0 = continuous until stop)
   duration: 0
   turn_coef: 150

@@ -56,9 +56,9 @@ class CatToyController:
                 line = self.ser.readline().decode(errors="ignore").strip()
                 if line == "ACK":
                     return
-            print(f"⚠️  ACK timeout for {cmd}")
+            print(f"ACK timeout for {cmd}")
         except SerialException:
-            print(f"⚠️  Serial error sending {cmd}")
+            print(f"Serial error sending {cmd}")
 
     def close(self):
         self._enqueue("stop")
