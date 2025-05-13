@@ -2,6 +2,8 @@ pyserial
 dualsense-controller
 pyyaml
 hidapi
-
-flask 
-opencv-python
+flask==3.0.0
+flask-cors==4.0.0
+opencv-python==4.8.1.78
+numpy==1.26.0
+pytest==7.4.2

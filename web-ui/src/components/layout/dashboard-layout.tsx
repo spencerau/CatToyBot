@@ -38,13 +38,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </Link>
           </div>
           <nav className="flex items-center gap-2">
-            <Link 
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-[#2A2A3F] hover:text-[#00F5FF] relative group"
-              href="/status"
-            >
-              <span className="relative z-10">Status</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-[#00F5FF]/10 to-[#00A3FF]/10 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity" />
-            </Link>
+            
             <Link 
               className="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-[#2A2A3F] hover:text-[#00F5FF] relative group"
               href="/controls"
@@ -52,13 +46,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <span className="relative z-10">Controls</span>
               <span className="absolute inset-0 bg-gradient-to-r from-[#00F5FF]/10 to-[#00A3FF]/10 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity" />
             </Link>
-            <Link 
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-[#2A2A3F] hover:text-[#00F5FF] relative group"
-              href="/settings"
-            >
-              <span className="relative z-10">Settings</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-[#00F5FF]/10 to-[#00A3FF]/10 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity" />
-            </Link>
+            
           </nav>
         </div>
       </header>
