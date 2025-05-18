@@ -10,6 +10,8 @@ int FR_speed = 255;
 int BL_speed = 255;
 int BR_speed = 255;
 
+DriveDir lastDir = DriveDir::Stopped;
+
 
 void setupMotor(int dirPin, int pwmPin) {
   pinMode(dirPin, OUTPUT);
@@ -150,22 +152,44 @@ void drive(int speed, int turn_offset) {
 }
 
 void turn(char direction, int speed, int turn_offset) {
-  if (direction == 'l') { // turn left
-    // make right side faster
-    spinMotor(FR_DIR, FR_PWM, constrain(speed-turn_offset, 0, 255));
-    spinMotor(BR_DIR, BR_PWM, constrain(speed-turn_offset, 0, 255));
-    // make left side slower
-    spinMotor(FL_DIR, FL_PWM, constrain(speed+turn_offset, 0, 255));
-    spinMotor(BL_DIR, BL_PWM, constrain(speed+turn_offset, 0, 255));
-  } else if (direction == 'r') { // turn right
-    // make right side slower
-    spinMotor(FR_DIR, FR_PWM, constrain(speed+turn_offset, 0, 255));
-    spinMotor(BR_DIR, BR_PWM, constrain(speed+turn_offset, 0, 255));
-    // make left side faster
-    spinMotor(FL_DIR, FL_PWM, constrain(speed-turn_offset, 0, 255));
-    spinMotor(BL_DIR, BL_PWM, constrain(speed-turn_offset, 0, 255));
-  } else { // invalid
-    Serial.println("Invalid input");
+  if (lastDir == DriveDir::Forward) { // if the car was going forward
+    if (direction == 'l') { // turn left
+      // make right side faster
+      spinMotor(FR_DIR, FR_PWM, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BR_DIR, BR_PWM, constrain(speed-turn_offset, 0, 255));
+      // make left side slower
+      spinMotor(FL_DIR, FL_PWM, constrain(speed+turn_offset, 0, 255));
+      spinMotor(BL_DIR, BL_PWM, constrain(speed+turn_offset, 0, 255));
+    } else if (direction == 'r') { // turn right
+      // make right side slower
+      spinMotor(FR_DIR, FR_PWM, constrain(speed+turn_offset, 0, 255));
+      spinMotor(BR_DIR, BR_PWM, constrain(speed+turn_offset, 0, 255));
+      // make left side faster
+      spinMotor(FL_DIR, FL_PWM, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BL_DIR, BL_PWM, constrain(speed-turn_offset, 0, 255));
+    } else { // invalid
+      Serial.println("Invalid input");
+    }
+  } else if (lastDir == DriveDir::Reverse) { // if car was going backwards
+    if (direction == 'l') { // turn left backwards
+      // make right side faster
+      spinMotor(FR_PWM, FR_DIR, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BR_PWM, BR_DIR, constrain(speed-turn_offset, 0, 255));
+      // make left side slower
+      spinMotor(FL_PWM, FL_DIR, constrain(speed+turn_offset, 0, 255));
+      spinMotor(BL_PWM, BL_DIR, constrain(speed+turn_offset, 0, 255));
+    } else if (direction == 'r') { // turn right backwards
+      // make right side slower
+      spinMotor(FR_PWM, FR_DIR, constrain(speed+turn_offset, 0, 255));
+      spinMotor(BR_PWM, BR_DIR, constrain(speed+turn_offset, 0, 255));
+      // make left side faster
+      spinMotor(FL_PWM, FL_DIR, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BL_PWM, BL_DIR, constrain(speed-turn_offset, 0, 255));
+    } else { // invalid
+      Serial.println("Invalid input");
+    }
+  } else if (lastDir == DriveDir::Stopped) {
+    // do nothing
   }
 }
 
@@ -177,12 +201,14 @@ void handlePacket(const DataPacket &pkt) {
       // pkt.speed and pkt.turn are –128…+127 so map back to –255…+255 range
       //drive(pkt.speed*2, pkt.turn*2); 
       moveAllMotors(true, pkt.speed*2, 0);
+      lastDir = DriveDir::Forward;
       Serial.println("ACK");
       break;
     // reverse
     case 'r':
       moveAllMotors(false, pkt.speed*2, 0);
       Serial.println("ACK");
+      lastDir = DriveDir::Reverse;
       break;
     // turn left
     case 'L':
@@ -200,6 +226,7 @@ void handlePacket(const DataPacket &pkt) {
       setupMotor(FR_DIR, FR_PWM);
       setupMotor(BL_DIR, BL_PWM);
       setupMotor(BR_DIR, BR_PWM);
+      lastDir = DriveDir::Stopped;
       Serial.println("ACK");
       break;
 

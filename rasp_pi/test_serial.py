@@ -5,7 +5,7 @@ import time
 import curses
 import struct
 
-# Load serial settings from config.yaml
+
 with open("configs/config.yaml") as f:
     config = yaml.safe_load(f)
 
