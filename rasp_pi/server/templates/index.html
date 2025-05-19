@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>CatBot Control</title>
+
     <style>
         body { font-family: sans-serif; text-align: center; margin-top: 20px; }
         img  { border: 1px solid #ccc; }
@@ -11,27 +12,43 @@
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
     <script>
-        const WS_PORT = 9001;
-        const HOST    = location.hostname;
-        const client  = mqtt.connect(`ws://${HOST}:${WS_PORT}`);
+    const mqttHost = `ws://${location.hostname}:9001`;
+    const client   = mqtt.connect(mqttHost);
+    function pub(dir){ client.publish('catbot/drive', JSON.stringify({dir})); }
 
-        client.on('connect', () => console.log('MQTT-WS connected'));
-        client.on('error',   err =>  console.error('MQTT error', err));
+    let fwd=false, back=false, left=false, right=false;
+    let lastSent = '';
 
-        function sendCommand(dir) {
-            client.publish('catbot/drive', JSON.stringify({dir}));
+    function updateDir(){
+        let dir = 'stop';
+
+        if (left ^ right) {
+            dir = left ? 'left' : 'right';
+        } else if (fwd ^ back) {
+            dir = fwd ? 'forward' : 'backward';
         }
 
-        document.addEventListener('keydown', e => {
-            const keyMap = {w:'forward', 
-                            s:'backward', 
-                            a:'left',
-                            d:'right', 
-                            ' ':'stop'};
-            const cmd = keyMap[e.key.toLowerCase()];
-            if (cmd) sendCommand(cmd);
-        });
+        if (dir !== lastSent){
+            pub(dir);
+            lastSent = dir;
+        }
+    }
+
+    function setKey(e, val){
+        switch (e.key.toLowerCase()){
+            case 'w': fwd   = val; break;
+            case 's': back  = val; break;
+            case 'a': left  = val; break;
+            case 'd': right = val; break;
+            default : return;
+        }
+        updateDir();
+    }
+
+    document.addEventListener('keydown', e => { if (!e.repeat) setKey(e,true); });
+    document.addEventListener('keyup',   e => setKey(e,false));
     </script>
+
 </head>
 
 <body>
@@ -46,6 +63,6 @@
         <button onclick="sendCommand('backward')">?</button>
     </div>
 
-    <p>Use W A S D keys or spacebar to control the robot</p>
+    <p>Hold W A S D keys to control the robot</p>
 </body>
 </html>
