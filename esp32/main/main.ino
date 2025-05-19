@@ -33,66 +33,6 @@ void spinMotor(int in1Pin, int in2Pin, int speed) {
   analogWrite(in2Pin, speed);
 }
 
-void testMotor(const char* motorLabel, bool forward, int speed, int time) {
-  if (strcmp(motorLabel, "FL") == 0) {
-    Serial.print("Testing: Front Left - ");
-    
-    if (forward) {
-      Serial.println("Forward");
-      spinMotor(FL_DIR, FL_PWM, speed);
-      delay(time);
-      setupMotor(FL_DIR, FL_PWM);
-    } else {
-      Serial.println("Backward");
-      spinMotor(FL_PWM, FL_DIR, speed);
-      delay(time);
-      setupMotor(FL_PWM, FL_DIR);
-    }
-  } else if (strcmp(motorLabel, "FR") == 0) {
-    Serial.print("Testing: Front Right - ");
-    if (forward) {
-      Serial.println("Forward");
-      spinMotor(FR_DIR, FR_PWM, speed);
-      delay(time);
-      setupMotor(FR_DIR, FR_PWM);
-    } else {
-      Serial.println("Backward");
-      spinMotor(FR_PWM, FR_DIR, speed);
-      delay(time);
-      setupMotor(FR_PWM, FR_DIR);
-    }
-  } else if (strcmp(motorLabel, "BL") == 0) {
-    Serial.print("Testing: Back Left - ");
-    if (forward) {
-      Serial.println("Forward");
-      spinMotor(BL_DIR, BL_PWM, speed);
-      delay(time);
-      setupMotor(BL_DIR, BL_PWM);
-    } else {
-      Serial.println("Backward");
-      spinMotor(BL_PWM, BL_DIR, speed);
-      delay(time);
-      setupMotor(BL_PWM, BL_DIR);
-    }
-  } else if (strcmp(motorLabel, "BR") == 0) {
-    Serial.print("Testing: Back Right - ");
-    if (forward) {
-      Serial.println("Forward");
-      spinMotor(BR_DIR, BR_PWM, speed);
-      delay(time);
-      setupMotor(BR_DIR, BR_PWM);
-    } else {
-      Serial.println("Backward");
-      spinMotor(BR_PWM, BR_DIR, speed);
-      delay(time);
-      setupMotor(BR_PWM, FR_DIR);
-    }
-  } else {
-    Serial.print("Unknown motor label: ");
-    Serial.println(motorLabel);
-  }
-}
-
 void moveAllMotors(bool forward, int speed, int msRun) {
   // start all four motors
   if (forward) {
@@ -118,52 +58,19 @@ void moveAllMotors(bool forward, int speed, int msRun) {
   }
 }
 
-void drive(int speed, int turn_offset) {
-  int left_val = -1;
-  int right_val = -1;
-  
-  if (turn_offset == 0) {
-    if (speed > 0) {// go forward
-      moveAllMotors(true, abs(speed), 0);
-    } else { // go backwards
-      moveAllMotors(false, abs(speed), 0);
-    }
-    FL_speed = FR_speed = BL_speed = BR_speed = speed;
-  } else if (turn_offset > 0) { // pos value = turn right
-    int turn_offset = powf(turn_offset, 2.0f);
-    left_val = constrain(speed + turn_offset, 0, 255);
-    right_val = constrain(speed - turn_offset, 0, 255);
-  } else if (turn_offset < 0) { // neg value = turn left
-    int turn_offset = powf(turn_offset, 2.0f);
-    left_val = constrain(speed - turn_offset, 0, 255);
-    right_val = constrain(speed + turn_offset, 0, 255);
-  }
-  spinMotor(FL_DIR, FL_PWM, abs(left_val));
-  spinMotor(BL_DIR, BL_PWM, abs(left_val));
-  spinMotor(FR_DIR, FR_PWM, abs(right_val));
-  spinMotor(BR_DIR, BR_PWM, abs(right_val));
-
-  FL_speed = left_val;
-  FR_speed = left_val;
-  BL_speed = right_val;
-  BR_speed = right_val;
-
-  Serial.printf("DRIVE L=%d R=%d\n", left_val, right_val);
-}
-
 void turn(char direction, int speed, int turn_offset) {
-  if (lastDir == DriveDir::Forward) { // if the car was going forward
+  if (lastDir == DriveDir::Forward || lastDir == DriveDir::Stopped) {
     if (direction == 'l') { // turn left
       // make right side faster
       spinMotor(FR_DIR, FR_PWM, constrain(speed-turn_offset, 0, 255));
       spinMotor(BR_DIR, BR_PWM, constrain(speed-turn_offset, 0, 255));
-      // make left side slower
-      spinMotor(FL_DIR, FL_PWM, constrain(speed+turn_offset, 0, 255));
-      spinMotor(BL_DIR, BL_PWM, constrain(speed+turn_offset, 0, 255));
+      // make left side move in the opposite direction
+      spinMotor(FL_PWM, FL_DIR, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BL_PWM, BL_DIR, constrain(speed-turn_offset, 0, 255));
     } else if (direction == 'r') { // turn right
-      // make right side slower
-      spinMotor(FR_DIR, FR_PWM, constrain(speed+turn_offset, 0, 255));
-      spinMotor(BR_DIR, BR_PWM, constrain(speed+turn_offset, 0, 255));
+      // make right side turn in opposite direction
+      spinMotor(FR_PWM, FR_DIR, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BR_PWM, BR_DIR, constrain(speed-turn_offset, 0, 255));
       // make left side faster
       spinMotor(FL_DIR, FL_PWM, constrain(speed-turn_offset, 0, 255));
       spinMotor(BL_DIR, BL_PWM, constrain(speed-turn_offset, 0, 255));
@@ -175,22 +82,23 @@ void turn(char direction, int speed, int turn_offset) {
       // make right side faster
       spinMotor(FR_PWM, FR_DIR, constrain(speed-turn_offset, 0, 255));
       spinMotor(BR_PWM, BR_DIR, constrain(speed-turn_offset, 0, 255));
-      // make left side slower
-      spinMotor(FL_PWM, FL_DIR, constrain(speed+turn_offset, 0, 255));
-      spinMotor(BL_PWM, BL_DIR, constrain(speed+turn_offset, 0, 255));
+      // make left side turn in opposite direction
+      spinMotor(FL_DIR, FL_PWM, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BL_DIR, BL_PWM, constrain(speed-turn_offset, 0, 255));
     } else if (direction == 'r') { // turn right backwards
-      // make right side slower
-      spinMotor(FR_PWM, FR_DIR, constrain(speed+turn_offset, 0, 255));
-      spinMotor(BR_PWM, BR_DIR, constrain(speed+turn_offset, 0, 255));
+      // make right side turn in opposite direction
+      spinMotor(FR_DIR, FR_PWM, constrain(speed-turn_offset, 0, 255));
+      spinMotor(BR_DIR, BR_PWM, constrain(speed-turn_offset, 0, 255));
       // make left side faster
       spinMotor(FL_PWM, FL_DIR, constrain(speed-turn_offset, 0, 255));
       spinMotor(BL_PWM, BL_DIR, constrain(speed-turn_offset, 0, 255));
     } else { // invalid
       Serial.println("Invalid input");
     }
-  } else if (lastDir == DriveDir::Stopped) {
-    // do nothing
   }
+  // } else if (lastDir == DriveDir::Stopped) {
+  //   // do nothing
+  // }
 }
 
 // Dispatch based on pkt.cmd
