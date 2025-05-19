@@ -1,12 +1,13 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response
 from picamera2 import Picamera2, Preview
+import paho.mqtt.client as mqtt
 import cv2
 import time
 import sys
 import os
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-
 import rasp_pi.test_serial as test_serial
 
 
@@ -18,28 +19,73 @@ picam2.configure(picam2.create_preview_configuration(
     ))
 picam2.start()
 
-@app.route('/drive', methods=['POST'])
-def drive():
-    direction = request.form.get('dir')
+# define MQTT variables
+BROKER = "100.96.15.96"
+PORT = 1883
+TOPIC = "catbot/drive"
+AUTH = None
 
-    speed = 255 - test_serial.config["turn"]["speed"]
-    turn_coef = test_serial.config["turn"]["turn_coef"]
+def on_connect(client, userdata, flags, rc):
+    print("MQTT connected:", rc)
+    client.subscribe(TOPIC)
 
-    if direction == "forward":
-        pkt = test_serial.create_packet('d', speed, 0)
-    elif direction == "backward":
-        pkt = test_serial.create_packet('r', speed, 0)
-    elif direction == "left":
-        pkt = test_serial.create_packet('L', speed, -turn_coef)
-    elif direction == "right":
-        pkt = test_serial.create_packet('R', speed, turn_coef)
-    elif direction == "stop":
-        pkt = test_serial.create_packet('s', 0, 0)
-    else:
-        return "Invalid direction", 400
+def on_message(client, userdata, msg):
+    try:
+        payload = json.loads(msg.payload.decode())
+        direction = payload.get("dir")
+        speed     = 255 - test_serial.config["turn"]["speed"]
+        turn_c    = test_serial.config["turn"]["turn_coef"]
 
-    test_serial.send_packet_and_wait(pkt)
-    return "OK"
+        if   direction == "forward":
+            pkt = test_serial.create_packet('d', speed, 0)
+        elif direction == "backward":
+            pkt = test_serial.create_packet('r', speed, 0)
+        elif direction == "left":
+            pkt = test_serial.create_packet('L', speed, -turn_c)
+        elif direction == "right":
+            pkt = test_serial.create_packet('R', speed,  turn_c)
+        elif direction == "stop":
+            pkt = test_serial.create_packet('s', 0, 0)
+        else:
+            print("Bad dir:", direction)
+            return
+
+        test_serial.send_packet_and_wait(pkt)
+
+    except Exception as e:
+        print("MQTT msg error:", e)
+
+
+# start MQTT protocol
+mqttc = mqtt.Client()
+if AUTH: mqttc.username_pw_set(*AUTH)
+mqttc.on_connect = on_connect
+mqttc.on_message = on_message
+mqttc.connect(BROKER, PORT, 60)
+mqttc.loop_start() 
+
+# @app.route('/drive', methods=['POST'])
+# def drive():
+#     direction = request.form.get('dir')
+
+#     speed = 255 - test_serial.config["turn"]["speed"]
+#     turn_coef = test_serial.config["turn"]["turn_coef"]
+
+#     if direction == "forward":
+#         pkt = test_serial.create_packet('d', speed, 0)
+#     elif direction == "backward":
+#         pkt = test_serial.create_packet('r', speed, 0)
+#     elif direction == "left":
+#         pkt = test_serial.create_packet('L', speed, -turn_coef)
+#     elif direction == "right":
+#         pkt = test_serial.create_packet('R', speed, turn_coef)
+#     elif direction == "stop":
+#         pkt = test_serial.create_packet('s', 0, 0)
+#     else:
+#         return "Invalid direction", 400
+
+#     test_serial.send_packet_and_wait(pkt)
+#     return "OK"
 
 def gen_frames():
     while True:

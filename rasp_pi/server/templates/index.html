@@ -4,36 +4,36 @@
     <title>CatBot Control</title>
     <style>
         body { font-family: sans-serif; text-align: center; margin-top: 20px; }
-        img { border: 1px solid #ccc; }
-        button {
-            width: 80px; height: 50px;
-            margin: 5px;
-            font-size: 16px;
-        }
+        img  { border: 1px solid #ccc; }
+        button { width: 80px; height: 50px; margin: 5px; font-size: 16px; }
     </style>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
     <script>
+        const WS_PORT = 9001;
+        const HOST    = location.hostname;
+        const client  = mqtt.connect(`ws://${HOST}:${WS_PORT}`);
+
+        client.on('connect', () => console.log('MQTT-WS connected'));
+        client.on('error',   err =>  console.error('MQTT error', err));
+
         function sendCommand(dir) {
-            fetch("/drive", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "dir=" + dir
-            });
+            client.publish('catbot/drive', JSON.stringify({dir}));
         }
 
-        // Optional: WASD key handling
-        document.addEventListener('keydown', function(event) {
-            const keyMap = {
-                'w': 'forward',
-                's': 'backward',
-                'a': 'left',
-                'd': 'right',
-                ' ': 'stop'
-            };
-            let cmd = keyMap[event.key.toLowerCase()];
+        document.addEventListener('keydown', e => {
+            const keyMap = {w:'forward', 
+                            s:'backward', 
+                            a:'left',
+                            d:'right', 
+                            ' ':'stop'};
+            const cmd = keyMap[e.key.toLowerCase()];
             if (cmd) sendCommand(cmd);
         });
     </script>
 </head>
+
 <body>
     <h2>Live Camera Feed + Robot Controls</h2>
     <img src="{{ url_for('video') }}" width="640" height="360"><br><br>
